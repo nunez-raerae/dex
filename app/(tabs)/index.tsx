@@ -68,6 +68,7 @@ export default function Index() {
             paddingHorizontal: 5,
             paddingVertical: 5,
           }}
+          disableIntervalMomentum={true}
           data={flatData}
           renderItem={renderItem}
           keyExtractor={(item) => item.name}
