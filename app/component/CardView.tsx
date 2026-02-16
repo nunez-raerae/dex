@@ -1,4 +1,4 @@
-import { pokeFilter, useSvgText } from "@/api/controller";
+import { pokeFilter } from "@/api/controller";
 import { PokeballIcon, typeColors, typeIcons } from "@/utils/util";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
@@ -11,11 +11,11 @@ type Props = { pokemon: pokeFilter };
 
 const CardView = React.memo(function CardView({ pokemon }: Props) {
   const bg = typeColors[pokemon.types?.[0]?.type?.name] || "#fff";
-  const uri =
-    pokemon.sprites?.other?.dream_world?.front_default ||
-    pokemon.sprites?.front_default;
+  // const uri =
+  //   pokemon.sprites?.other?.dream_world?.front_default ||
+  //   pokemon.sprites?.front_default;
 
-  const { data: xml } = useSvgText(uri);
+  // const { data: xml } = useSvgText(uri);
 
   return (
     <View style={[styles.container, { backgroundColor: bg }]}>
@@ -51,7 +51,9 @@ const CardView = React.memo(function CardView({ pokemon }: Props) {
               <PokeballIcon />
             </View>
             <View style={styles.svgTop}>
-              {!!xml && <SvgXml xml={xml} width={70} height={70} />}
+              {!!pokemon.dreamWorldSvgXml && (
+                <SvgXml xml={pokemon.dreamWorldSvgXml} width={70} height={70} />
+              )}
             </View>
           </View>
         </View>

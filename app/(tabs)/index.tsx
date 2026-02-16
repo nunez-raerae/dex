@@ -1,4 +1,3 @@
-import { Link } from "expo-router";
 import React from "react";
 import { FlatList, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -9,7 +8,6 @@ import {
 } from "../../api/controller";
 import CardView from "../component/CardView";
 import SearchBar from "../component/SearchBar";
-import ModalView from "../ModalView";
 
 export default function Index() {
   const [name, setName] = React.useState<string | undefined>(undefined);
@@ -52,10 +50,13 @@ export default function Index() {
           alignItems: "center",
         }}
       >
-        <Link href="/ViewInfo" style={{ marginTop: 20 }}>
+        {/* <Link href="/ViewInfo" style={{ marginTop: 20 }}>
           <Text style={{ color: "white", fontSize: 18 }}>Go to ViewInfo</Text>
         </Link>
         <ModalView />
+        <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+          <SearchBar value={name} onChangeText={setName} />
+        </View> */}
         <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
           <SearchBar value={name} onChangeText={setName} />
         </View>
@@ -73,8 +74,8 @@ export default function Index() {
           numColumns={2}
           columnWrapperStyle={{ justifyContent: "space-between", gap: 10 }}
           removeClippedSubviews
-          initialNumToRender={8}
-          maxToRenderPerBatch={8}
+          initialNumToRender={10}
+          maxToRenderPerBatch={10}
           updateCellsBatchingPeriod={50}
           windowSize={7}
           onEndReachedThreshold={0.5}

@@ -57,6 +57,7 @@ export type pokeFilter = {
   sprites: sprites;
   types: types[];
   order: number;
+  dreamWorldSvgXml?: string | null;
 };
 
 async function getPokeFilter(name: string) {
@@ -129,7 +130,7 @@ export function useGetPokeList() {
   });
 }
 
-const LIMIT = 50;
+const LIMIT = 20;
 export async function getPokePageV2(offset: number = 1): Promise<pokeFilter[]> {
   const res = await fetch(
     `https://pokeapi.co/api/v2/pokemon/?limit=${LIMIT}&offset=${offset}`,
@@ -138,7 +139,22 @@ export async function getPokePageV2(offset: number = 1): Promise<pokeFilter[]> {
   const data: data = await res.json();
 
   const requests =
-    data.results?.map((item) => fetch(item.url).then((r) => r.json())) || [];
+    data.results?.map(async (item) => {
+      const pokemon: pokeFilter = await fetch(item.url).then((r) => r.json());
+
+      const svgUrl = pokemon.sprites?.other?.dream_world?.front_default;
+
+      let dreamWorldSvgXml: string | null = null;
+      if (svgUrl) {
+        try {
+          dreamWorldSvgXml = await getSvgText(svgUrl);
+        } catch {
+          dreamWorldSvgXml = null;
+        }
+      }
+
+      return { ...pokemon, dreamWorldSvgXml };
+    }) ?? [];
 
   return await Promise.all(requests);
 }
@@ -166,15 +182,15 @@ async function getSvgText(url: string): Promise<string> {
   return await res.text();
 }
 
-export function useSvgText(url?: string) {
-  return useQuery<string, Error>({
-    queryKey: ["svgText", url],
-    queryFn: () => getSvgText(url!),
-    enabled: !!url,
-    staleTime: 30 * 24 * 60 * 60 * 1000, // Cache for 30 days
-    gcTime: 30 * 24 * 60 * 60 * 1000, // Keep in cache for 30 days
-    refetchOnMount: false,
-    refetchOnWindowFocus: false,
-    refetchOnReconnect: false,
-  });
-}
+// export function useSvgText(url?: string) {
+//   return useQuery<string, Error>({
+//     queryKey: ["svgText", url],
+//     queryFn: () => getSvgText(url!),
+//     enabled: !!url,
+//     staleTime: 30 * 24 * 60 * 60 * 1000, // Cache for 30 days
+//     gcTime: 30 * 24 * 60 * 60 * 1000, // Keep in cache for 30 days
+//     refetchOnMount: false,
+//     refetchOnWindowFocus: false,
+//     refetchOnReconnect: false,
+//   });
+// }
