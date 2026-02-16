@@ -1,98 +1,148 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { Link } from "expo-router";
+import React from "react";
+import { FlatList, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  useGetPokeFilter,
+  useGetPokeList,
+  useInfinitePokeList,
+} from "../../api/controller";
+import CardView from "../component/CardView";
+import SearchBar from "../component/SearchBar";
+import ModalView from "../ModalView";
 
-import { HelloWave } from '@/components/hello-wave';
-import ParallaxScrollView from '@/components/parallax-scroll-view';
-import { ThemedText } from '@/components/themed-text';
-import { ThemedView } from '@/components/themed-view';
-import { Link } from 'expo-router';
+export default function Index() {
+  const [name, setName] = React.useState<string | undefined>(undefined);
+  const [debouncedName, setDebouncedName] = React.useState<string | undefined>(
+    undefined,
+  );
 
-export default function HomeScreen() {
+  const { data: pokeFilterData } = useGetPokeFilter(debouncedName || "");
+  const { data: pokeListData } = useGetPokeList();
+
+  const {
+    data: infinitePokeListData,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useInfinitePokeList();
+  const flatData = React.useMemo(
+    () => infinitePokeListData?.pages.flat() ?? [],
+    [infinitePokeListData],
+  );
+
+  const renderItem = React.useCallback(
+    ({ item }: { item: any }) => <CardView pokemon={item} />,
+    [],
+  );
+
+  React.useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedName(name);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [name]);
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <Link href="/modal">
-          <Link.Trigger>
-            <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-          </Link.Trigger>
-          <Link.Preview />
-          <Link.Menu>
-            <Link.MenuAction title="Action" icon="cube" onPress={() => alert('Action pressed')} />
-            <Link.MenuAction
-              title="Share"
-              icon="square.and.arrow.up"
-              onPress={() => alert('Share pressed')}
-            />
-            <Link.Menu title="More" icon="ellipsis">
-              <Link.MenuAction
-                title="Delete"
-                icon="trash"
-                destructive
-                onPress={() => alert('Delete pressed')}
-              />
-            </Link.Menu>
-          </Link.Menu>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View
+        style={{
+          flex: 1,
+          // backgroundColor: "red",
+          alignItems: "center",
+        }}
+      >
+        <Link href="/ViewInfo" style={{ marginTop: 20 }}>
+          <Text style={{ color: "white", fontSize: 18 }}>Go to ViewInfo</Text>
         </Link>
+        <ModalView />
+        <View style={{ marginTop: 20, paddingHorizontal: 10 }}>
+          <SearchBar value={name} onChangeText={setName} />
+        </View>
+        {/* <View style={{ flex: 1, width: "100%", margin: 0, padding: 0 }}> */}
+        <FlatList
+          style={{
+            flex: 1,
+            width: "100%",
+            paddingHorizontal: 5,
+            paddingVertical: 5,
+          }}
+          data={flatData}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.name}
+          numColumns={2}
+          columnWrapperStyle={{ justifyContent: "space-between", gap: 10 }}
+          removeClippedSubviews
+          initialNumToRender={8}
+          maxToRenderPerBatch={8}
+          updateCellsBatchingPeriod={50}
+          windowSize={7}
+          onEndReachedThreshold={0.5}
+          onEndReached={() => {
+            if (hasNextPage && !isFetchingNextPage) fetchNextPage();
+          }}
+          ListFooterComponent={
+            isFetchingNextPage ? (
+              <View style={{ padding: 10 }}>
+                <Text style={{ color: "white" }}>Loading...</Text>
+              </View>
+            ) : null
+          }
+        />
+        {/* </View> */}
+        {/* <ScrollView style={{ width: "100%" }}> */}
+        {/* <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              // width: "100%",
+              gridAutoColumns: "1fr",
+              justifyContent: "space-between",
+              paddingHorizontal: 9,
+            }}
+          >
+            {!(name && pokeListData) &&
+              pokeListData?.map((poke) => (
+                <CardView props={{ ...poke }} key={poke.name} />
+              ))}
+          </View> */}
 
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+        {/* {pokeFilterData === null && (
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                marginBottom: 10,
+                borderRadius: 5,
+                marginHorizontal: 10,
+              }}
+            >
+              <Text>No pokemons found.</Text>
+            </View>
+          )} */}
+        {/* {name && pokeFilterData && (
+            <View
+              style={{
+                backgroundColor: "white",
+                padding: 10,
+                marginBottom: 10,
+                borderRadius: 5,
+                marginHorizontal: 10,
+              }}
+            >
+              <Text>Name: {name}</Text>
+              <Text>Base Experience: {pokeFilterData.base_experience}</Text>
+              <Text>Abilities:</Text>
+              {pokeFilterData.abilities.map((ability) => (
+                <Text key={ability.ability.name}>
+                  - {ability.ability.name} {ability.is_hidden ? "(Hidden)" : ""}
+                </Text>
+              ))}
+            </View>
+          )} */}
+        {/* </ScrollView> */}
+      </View>
+    </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
-});
