@@ -27,7 +27,7 @@ export default function TabComponent({
     "About" | "Base Stats" | "Evolution" | "Moves"
   >("About");
   return (
-    <View style={{ flex: 1 }}>
+    <View style={{ flex: 1, borderRadius: 15, overflow: "hidden" }}>
       <View
         style={{
           flexDirection: "row",
@@ -115,7 +115,7 @@ function EvolutionTab({ props }: { props: pokeFilter | undefined }) {
         contentContainerStyle={{
           flexGrow: 1,
           padding: 10,
-          paddingBottom: vs(400),
+          // paddingBottom: vs(400),
         }}
 
         // alwaysBounceVertical
