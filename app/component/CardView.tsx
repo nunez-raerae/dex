@@ -2,6 +2,7 @@ import { pokeFilter } from "@/api/controller";
 import { PokeballIcon, typeColors, typeIcons } from "@/utils/util";
 import React from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { scale } from "react-native-size-matters";
 import { SvgXml } from "react-native-svg";
 
 const capitalizeFirst = (str: string) =>
@@ -11,11 +12,6 @@ type Props = { pokemon: pokeFilter };
 
 const CardView = React.memo(function CardView({ pokemon }: Props) {
   const bg = typeColors[pokemon.types?.[0]?.type?.name] || "#fff";
-  // const uri =
-  //   pokemon.sprites?.other?.dream_world?.front_default ||
-  //   pokemon.sprites?.front_default;
-
-  // const { data: xml } = useSvgText(uri);
 
   return (
     <View style={[styles.container, { backgroundColor: bg }]}>
@@ -70,8 +66,8 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     borderRadius: 15,
     padding: 10,
-    marginBottom: 10,
-    width: "49%",
+    marginBottom: 5,
+    width: scale(160),
   },
   headerRow: {
     marginBottom: 15,
@@ -89,10 +85,10 @@ const styles = StyleSheet.create({
     paddingHorizontal: 5,
     paddingVertical: 4,
     borderRadius: 45,
-    marginBottom: 5,
+    marginBottom: 4,
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 4,
   },
   typeIconWrap: { borderRadius: 50, padding: 4 },
   typeText: { fontSize: 12, color: "white", fontWeight: "400" },

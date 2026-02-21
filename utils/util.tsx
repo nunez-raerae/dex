@@ -67,6 +67,43 @@ export const typeIcons: Record<string, JSX.Element> = {
   //   unknown: <Unknown fill="#68A090" width={10} height={10} />,
 };
 
-export function PokeballIcon() {
-  return <Pokeball width={80} height={80} />;
+export function PokeballIcon(props: { width?: number; height?: number }) {
+  return <Pokeball width={props.width || 80} height={props.height || 80} />;
+}
+
+const typeIconComponents = {
+  normal: Normal,
+  fighting: Fighting,
+  flying: Flying,
+  poison: Poison,
+  ground: Ground,
+  rock: Rock,
+  bug: Bug,
+  ghost: Ghost,
+  steel: Steel,
+  fire: Fire,
+  water: Water,
+  grass: Grass,
+  electric: Electric,
+  psychic: Psychic,
+  ice: Ice,
+  dragon: Dragon,
+  dark: Dark,
+  fairy: Fairy,
+} as const;
+
+export function TypeIcon(props: {
+  type: string;
+  width?: number;
+  height?: number;
+}): JSX.Element | null {
+  const { type, width = 10, height = 10 } = props;
+  const Comp =
+    typeIconComponents[type as keyof typeof typeIconComponents] ?? null;
+
+  if (!Comp) return null;
+
+  return (
+    <Comp fill={typeColors[type] ?? "#000"} width={width} height={height} />
+  );
 }

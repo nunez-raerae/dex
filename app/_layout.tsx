@@ -6,12 +6,17 @@ export default function RootLayout() {
     <QueryClientProvider client={queryClient}>
       <Stack
         screenOptions={{
-          headerBackButtonDisplayMode: "default",
-          animation: "slide_from_bottom",
+          headerShown: false,
         }}
       >
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="ViewInfo" />
+        <Stack.Screen
+          name="index"
+          options={{
+            title: "Pokédex",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen name="[MoreDetail]" />
       </Stack>
     </QueryClientProvider>
   );
