@@ -1,50 +1,40 @@
-# Welcome to your Expo app 👋
+# Dex (Expo Pokédex)
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A simple Pokédex built with **Expo + React Native + Expo Router**, backed by **PokéAPI** and cached with **TanStack Query**.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Browse Pokémon with cached API fetching ([`useGetPokeList`](api/controller.tsx), [`useInfinitePokeList`](api/controller.tsx))
+- Pokémon detail screen with gradient background + type badges ([app/[MoreDetail].tsx](app/[MoreDetail].tsx))
+- Detail tabs: **About**, **Base Stats** (animated segments), **Evolution** (chain fetch) ([`TabComponent`](app/component/TabComponent.tsx))
+- Reusable card UI for list items ([`CardView`](app/component/CardView.tsx))
+- Type colors/icons utilities ([utils/util.tsx](utils/util.tsx))
 
-   ```bash
-   npm install
-   ```
+## Tech Stack
 
-2. Start the app
+- Expo / React Native
+- Expo Router
+- TanStack React Query
+- TypeScript
+- `react-native-svg`, `expo-linear-gradient`, `react-native-size-matters`
 
-   ```bash
-   npx expo start
-   ```
+## Project Structure
 
-In the output, you'll find options to open the app in a
+- API hooks & types: [api/controller.tsx](api/controller.tsx)
+- Routes:
+  - Home: [app/index.tsx](app/index.tsx)
+  - Details: [app/[MoreDetail].tsx](app/[MoreDetail].tsx)
+  - Layout: [app/\_layout.tsx](app/_layout.tsx)
+- UI components: [app/component/](app/component/)
+  - [`CardView`](app/component/CardView.tsx)
+  - [`TabComponent`](app/component/TabComponent.tsx)
+  - [app/component/SearchBar.tsx](app/component/SearchBar.tsx)
+- Assets: [assets/](assets/)
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## Getting Started
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### (1) Install dependencies
 
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+```sh
+npm install
 ```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
