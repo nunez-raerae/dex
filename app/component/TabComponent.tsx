@@ -4,7 +4,8 @@ import {
   useGetPokeEvolutionChain,
   useGetPokeSpecies,
 } from "@/api/controller";
-import { typeColors } from "@/utils/util";
+import { typeColors, TypeIcon } from "@/utils/util";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import React from "react";
 import {
   Animated,
@@ -27,7 +28,7 @@ export default function TabComponent({
     "About" | "Base Stats" | "Evolution" | "Moves"
   >("About");
   return (
-    <View style={{ flex: 1, borderRadius: 15, overflow: "hidden" }}>
+    <View>
       <View
         style={{
           flexDirection: "row",
@@ -60,7 +61,7 @@ export default function TabComponent({
           );
         })}
       </View>
-      <View style={{ padding: 10, flex: 1 }}>
+      <View>
         {activeTab === "About" && <AboutTab />}
         {activeTab === "Base Stats" && <BaseStatsTab props={props} />}
         {activeTab === "Evolution" && <EvolutionTab props={props} />}
@@ -106,22 +107,24 @@ function EvolutionTab({ props }: { props: pokeFilter | undefined }) {
   const evoDetails = useGetDetails(names);
 
   return (
-    <View style={{ flex: 1, borderRadius: 15, overflow: "hidden" }}>
-      <ScrollView
-        style={{
-          flex: 1,
-          gap: 10,
-        }}
-        contentContainerStyle={{
-          flexGrow: 1,
-          padding: 10,
-          // paddingBottom: vs(400),
-        }}
+    <ScrollView
+      style={{
+        gap: 10,
+        // height: vs(300),
+      }}
+      contentContainerStyle={{
+        padding: 10,
+        justifyContent: "center",
+        // flex: 1,
+        alignItems: "center",
 
-        // alwaysBounceVertical
-        // showsHorizontalScrollIndicator={true}
-      >
-        {evoDetails?.map((evo, index) => (
+        paddingBottom: vs(410),
+      }}
+      // alwaysBounceVertical
+      // showsHorizontalScrollIndicator={true}
+    >
+      {evoDetails?.map((evo, index) => (
+        <React.Fragment key={index}>
           <View
             style={{
               display: "flex",
@@ -132,7 +135,7 @@ function EvolutionTab({ props }: { props: pokeFilter | undefined }) {
           >
             <View
               style={{
-                marginBottom: 15,
+                padding: 10,
                 width: scale(100),
                 alignItems: "center",
                 backgroundColor: "#f0f0f0",
@@ -147,20 +150,46 @@ function EvolutionTab({ props }: { props: pokeFilter | undefined }) {
               />
             </View>
             <View>
-              <Text>
+              <Text
+                style={{
+                  fontSize: scale(14),
+                  fontWeight: "600",
+                  color: "#4e4e4e",
+                }}
+              >
+                #{evo?.order.toString().padStart(3, "0")}
+              </Text>
+              <Text
+                style={{
+                  fontSize: scale(16),
+                  fontWeight: "700",
+                  color: "#272727",
+                }}
+              >
                 {evo?.name.charAt(0).toUpperCase() + evo?.name.slice(1)}
               </Text>
-              <View>
+              <View
+                style={{
+                  flexDirection: "row",
+                  gap: 10,
+                  justifyContent: "center",
+                }}
+              >
                 {evo?.types?.map((type, index) => (
                   <View
                     key={index}
                     style={{
+                      width: scale(65),
                       backgroundColor: typeColors[type.type.name] || "#ccc",
                       padding: 4,
                       borderRadius: 5,
                       marginTop: 5,
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 4,
                     }}
                   >
+                    <TypeIcon type={type.type.name} width={20} height={20} />
                     <Text
                       style={{
                         color: "#fff",
@@ -169,16 +198,31 @@ function EvolutionTab({ props }: { props: pokeFilter | undefined }) {
                         textTransform: "capitalize",
                       }}
                     >
-                      {type.type.name}
+                      {type.type.name.trim()}
                     </Text>
                   </View>
                 ))}
               </View>
             </View>
           </View>
-        ))}
-      </ScrollView>
-    </View>
+          {/* // Add an arrow between evolutions, except after the last one */}
+          {index < evoDetails.length - 1 && (
+            <View
+              style={{
+                width: scale(30),
+                height: scale(30),
+                justifyContent: "center",
+                padding: 5,
+                transform: [{ rotate: "90deg" }],
+                alignItems: "center",
+              }}
+            >
+              <Ionicons name="arrow-forward" size={scale(20)} color="#888" />
+            </View>
+          )}
+        </React.Fragment>
+      ))}
+    </ScrollView>
   );
 }
 
